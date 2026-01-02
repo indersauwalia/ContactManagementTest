@@ -26,11 +26,15 @@ app.get("/api/test", (req, res) => {
 });
 
 // Serve React frontend
-const clientPath = path.join(__dirname, "../../client");
-app.use(express.static(clientPath));
+const isProd = process.env.NODE_ENV === "production";
+const clientPath = isProd
+    ? path.join(__dirname, "../../client/dist")
+    : path.join(__dirname, "../../client");
 
 // Catch-all for React routing (named wildcard)
-app.get("/*anything", (req, res) => {
+app.use(express.static(clientPath));
+
+app.get("*", (req, res) => {
     res.sendFile(path.join(clientPath, "index.html"));
 });
 
